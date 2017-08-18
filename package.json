@@ -1,0 +1,59 @@
+{
+  "name": "qub-time",
+  "version": "1.0.0",
+  "description": "A collection of common data structures and functions for dealing with dates and times",
+  "main": "time",
+  "typings": "time",
+  "files": [
+    "*.js",
+    "*.js.map",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "prepublishOnly": "npm run setup && npm run build && cpy output/sources/* .",
+    "postpublish": "rimraf *.js && rimraf *.js.map && rimraf *.d.ts",
+    "test": "mocha --colors --require source-map-support/register --ui tdd output/tests/",
+    "coverage": "nyc npm test && open-cli output/coverage/index.html",
+    "travis-test": "npm run setup && npm run build && nyc --reporter=text-lcov npm test | coveralls",
+    "setup": "npm install"
+  },
+  "nyc": {
+    "reporter": [
+      "html",
+      "text-summary"
+    ],
+    "report-dir": "output/coverage/",
+    "temp-directory": "output/.nyc_output/",
+    "exclude": [
+      "output/tests"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danschultequb/qub-typescript-time.git"
+  },
+  "keywords": [
+    "qub"
+  ],
+  "author": "Dan Schulte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danschultequb/qub-typescript-time/issues"
+  },
+  "homepage": "https://github.com/danschultequb/qub-typescript-time#readme",
+  "devDependencies": {
+    "@types/mocha": "2.2.41",
+    "@types/node": "8.0.24",
+    "coveralls": "2.13.1",
+    "mocha": "3.5.0",
+    "nyc": "11.1.0",
+    "open-cli": "1.0.5",
+    "rimraf": "2.6.1",
+    "source-map-support": "0.4.16",
+    "typescript": "2.4.2"
+  },
+  "dependencies": {
+    "moment": "2.18.1"
+  }
+}
