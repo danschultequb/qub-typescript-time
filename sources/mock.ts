@@ -1,15 +1,12 @@
-import * as moment from "moment";
-
 import * as time from "./time";
 
 /**
- * A Clock implementation that uses the moment (https://www.npmjs.com/package/moment) Javascript
- * library, but advances time manually.
+ * A Clock implementation that allows time to advances manually.
  */
 export class Clock implements time.Clock {
-    constructor(private _now?: moment.Moment) {
+    constructor(private _now?: time.DateTime) {
         if (!_now) {
-            this._now = moment();
+            this._now = new time.RealClock().getLocalDateTime();
         }
     }
 
@@ -31,7 +28,7 @@ export class Clock implements time.Clock {
      * Get the current local date and time according to this Clock.
      */
     public getLocalDateTime(): time.DateTime {
-        return new time.MomentDateTime(this._now);
+        return this._now;
     }
 
     /**
@@ -52,6 +49,6 @@ export class Clock implements time.Clock {
      * Get the current UTC date and time according to this Clock.
      */
     public getUTCDateTime(): time.DateTime {
-        return new time.MomentDateTime(this._now.utc());
+        return this._now.toUTC();
     }
 }
