@@ -3,106 +3,132 @@ import * as moment from "moment";
 /**
  * A Duration implementation that uses the moment library internally.
  */
-export abstract class Duration {
+export interface Duration {
     /**
      * Get the days segment in this Duration. For example, a duration that lasted 1 day, 2 hours, 3
      * minutes, 4 seconds, and 5 milliseconds would return 1.
      */
-    public abstract getDays(): number;
+    getDays(): number;
 
     /**
      * Get the hours segment in this Duration. For example, a duration that lasted 1 day, 2 hours, 3
      * minutes, 4 seconds, and 5 milliseconds would return 2.
      */
-    public abstract getHours(): number;
+    getHours(): number;
 
     /**
      * Get the minutes segment in this Duration. For example, a duration that lasted 1 day, 2 hours,
      * 3 minutes, 4 seconds, and 5 milliseconds would return 3.
      */
-    public abstract getMinutes(): number;
+    getMinutes(): number;
 
     /**
      * Get the seconds segment in this Duration. For example, a duration that lasted 1 day, 2 hours,
      * 3 minutes, 4 seconds, and 5 milliseconds would return 4.
      */
-    public abstract getSeconds(): number;
+    getSeconds(): number;
 
     /**
      * Get the milliseconds segment in this Duration. For example, a duration that lasted 1 day, 2
      * hours, 3 minutes, 4 seconds, and 5 milliseconds would return 5.
      */
-    public abstract getMilliseconds(): number;
+    getMilliseconds(): number;
 
     /**
      * Get the total number of days that this duration lasts. For example, a duration that lasted 1
      * day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 1.????.
      */
-    public abstract asDays(): number;
+    asDays(): number;
 
     /**
      * Get the total number of hours that this duration lasts. For example, a duration that lasted 1
      * day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 26.????.
      */
-    public abstract asHours(): number;
+    asHours(): number;
 
     /**
      * Get the total number of minutes that this duration lasts. For example, a duration that lasted
      * 1 day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 1250.????.
      */
-    public abstract asMinutes(): number;
+    asMinutes(): number;
 
     /**
      * Get the total number of seconds that this duration lasts. For example, a duration that lasted
      * 1 day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 1250.????.
      */
-    public abstract asSeconds(): number;
+    asSeconds(): number;
 
     /**
      * Get the total number of milliseconds that this duration lasts. For example, a duration that
      * lasted 1 day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 1250.????.
      */
-    public abstract asMilliseconds(): number;
+    asMilliseconds(): number;
+}
 
-    /**
-     * Create a new duration from the provided number of days.
-     * @param days The number of days in the duration.
-     */
-    public static fromDays(days: number): Duration {
-        return new MomentDuration(moment.duration({ days: days }));
-    }
+export interface DurationDetails {
+    days?: number;
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+    milliseconds?: number;
+}
 
-    /**
-     * Create a new duration from the provided number of hours.
-     * @param hours The number of hours in the duration.
-     */
-    public static fromHours(hours: number): Duration {
-        return new MomentDuration(moment.duration({ hours: hours }));
-    }
+/**
+ * Create a new duration from the provided number of days.
+ * @param days The number of days in the duration.
+ */
+export function durationFromDays(days: number): Duration {
+    return durationFrom({ days: days });
+}
 
-    /**
-     * Create a new duration from the provided number of minutes.
-     * @param minutes The number of minutes in the duration.
-     */
-    public static fromMinutes(minutes: number): Duration {
-        return new MomentDuration(moment.duration({ minutes: minutes }));
-    }
+/**
+ * Create a new duration from the provided number of hours.
+ * @param hours The number of hours in the duration.
+ */
+export function durationFromHours(hours: number): Duration {
+    return durationFrom({ hours: hours });
+}
 
-    /**
-     * Create a new duration from the provided number of seconds.
-     * @param seconds The number of seconds in the duration.
-     */
-    public static fromSeconds(seconds: number): Duration {
-        return new MomentDuration(moment.duration({ seconds: seconds }));
-    }
+/**
+ * Create a new duration from the provided number of minutes.
+ * @param minutes The number of minutes in the duration.
+ */
+export function durationFromMinutes(minutes: number): Duration {
+    return durationFrom({ minutes: minutes });
+}
 
-    /**
-     * Create a new duration from the provided number of milliseconds.
-     * @param milliseconds The number of milliseconds in the duration.
-     */
-    public static fromMilliseconds(milliseconds: number): Duration {
-        return new MomentDuration(moment.duration({ milliseconds: milliseconds }));
-    }
+/**
+ * Create a new duration from the provided number of seconds.
+ * @param seconds The number of seconds in the duration.
+ */
+export function durationFromSeconds(seconds: number): Duration {
+    return durationFrom({ seconds: seconds });
+}
+
+/**
+ * Create a new duration from the provided number of milliseconds.
+ * @param milliseconds The number of milliseconds in the duration.
+ */
+export function durationFromMilliseconds(milliseconds: number): Duration {
+    return durationFrom({ milliseconds: milliseconds });
+}
+
+/**
+ * Create a new duration from the provided duration units.
+ * @param days The number of days in the duration.
+ * @param hours The number of hours in the duration.
+ * @param minutes The number of minutes in the duration.
+ * @param seconds The number of seconds in the duration.
+ * @param milliseconds The number of milliseconds in the duration.
+ */
+export function durationFrom(details: DurationDetails): Duration {
+    return new RealDuration(moment.duration({
+        days: details.days,
+        hours: details.hours,
+        minutes: details.minutes,
+        seconds: details.seconds,
+        milliseconds: details.milliseconds
+    }));
 }
 
 /**
@@ -123,6 +149,29 @@ export interface Date {
      * Get the day of the month of this Date.
      */
     getDayOfMonth(): number;
+
+    /**
+     * Get the difference between this Date and the provided Date or DateTime.
+     */
+    dateDifference(rhs: Date | DateTime): Duration;
+}
+
+export interface DateDetails {
+    year: number;
+    month: number;
+    dayOfMonth: number;
+}
+
+/**
+ * Create a new Date object from the provided details.
+ * @param details The details of the Date object to create.
+ */
+export function dateFrom(details: DateDetails): Date {
+    return new MomentDateTime(moment({
+        year: details.year,
+        month: details.month - 1,
+        date: details.dayOfMonth
+    }));
 }
 
 /**
@@ -158,6 +207,27 @@ export interface Time {
      * Get the offset Duration that this time is from UTC (the zero offset);
      */
     getTimeZoneOffset(): Duration;
+
+    /**
+     * Get the difference between this Time and the provided Time or DateTime.
+     */
+    timeDifference(rhs: Time | DateTime): Duration;
+}
+
+export interface TimeDetails {
+    hour?: number;
+    minute?: number;
+    second?: number;
+    millisecond?: number;
+}
+
+export function timeFrom(details: TimeDetails): Time {
+    return new MomentDateTime(moment({
+        hour: details.hour,
+        minute: details.minute,
+        second: details.second,
+        millisecond: details.millisecond
+    }));
 }
 
 /**
@@ -168,14 +238,69 @@ export interface DateTime extends Date, Time {
      * Get the UTC version of this DateTime object.
      */
     toUTC(): DateTime;
+
+    /**
+     * Get the difference between this DateTime and the provided Time, Date, or DateTime.
+     */
+    difference(rhs: DateTime): Duration;
+}
+
+export interface DateTimeDetails extends DateDetails, TimeDetails {
+}
+
+export function dateTimeFrom(details: DateTimeDetails): DateTime {
+    return new MomentDateTime(moment({
+        year: details.year,
+        month: details.month - 1,
+        date: details.dayOfMonth,
+        hour: details.hour,
+        minute: details.minute,
+        second: details.second,
+        millisecond: details.millisecond
+    }));
+}
+
+/**
+ * This interface defines functions that can be used to get information about the date and time at
+ * which an application is running.
+ */
+export interface Clock {
+    /**
+     * Get the current local date according to this Clock.
+     */
+    getLocalDate(): Date;
+
+    /**
+     * Get the current local time according to this Clock.
+     */
+    getLocalTime(): Time;
+
+    /**
+     * Get the current local date and time according to this Clock.
+     */
+    getLocalDateTime(): DateTime;
+
+    /**
+     * Get the current UTC date according to this Clock.
+     */
+    getUTCDate(): Date;
+
+    /**
+     * Get the current UTC time according to this Clock.
+     */
+    getUTCTime(): Time;
+
+    /**
+     * Get the current UTC date and time according to this Clock.
+     */
+    getUTCDateTime(): DateTime;
 }
 
 /**
  * A Duration implementation that uses the moment library internally.
  */
-export class MomentDuration extends Duration {
+class RealDuration implements Duration {
     constructor(private _data: moment.Duration) {
-        super();
     }
 
     /**
@@ -183,7 +308,8 @@ export class MomentDuration extends Duration {
      * minutes, 4 seconds, and 5 milliseconds would return 1.
      */
     public getDays(): number {
-        return this._data.days();
+        const days: number = this._data.asDays();
+        return days >= 0 ? Math.floor(days) : Math.ceil(days);
     }
 
     /**
@@ -259,12 +385,10 @@ export class MomentDuration extends Duration {
     }
 }
 
-
-
 /**
  * A DateTime implementation that uses the moment library internally.
  */
-export class MomentDateTime {
+class MomentDateTime {
     constructor(private _data: moment.Moment) {
     }
 
@@ -323,7 +447,7 @@ export class MomentDateTime {
      * Get the offset Duration that this time is from UTC (the zero offset);
      */
     public getTimeZoneOffset(): Duration {
-        return Duration.fromMinutes(this._data.utcOffset());
+        return durationFromMinutes(this._data.utcOffset());
     }
 
     /**
@@ -332,42 +456,52 @@ export class MomentDateTime {
     public toUTC(): DateTime {
         return this._data.isUTC() ? this : new MomentDateTime(this._data.utc());
     }
-}
-
-/**
- * This interface defines functions that can be used to get information about the date and time at
- * which an application is running.
- */
-export interface Clock {
-    /**
-     * Get the current local date according to this Clock.
-     */
-    getLocalDate(): Date;
 
     /**
-     * Get the current local time according to this Clock.
+     * Get the date difference between this DateTime and the provided Time or DateTime.
      */
-    getLocalTime(): Time;
+    public timeDifference(rhs: Time | DateTime): Duration {
+        const lhsMoment: moment.Moment = toMomentTime(this);
+        const rhsMoment: moment.Moment = toMomentTime(rhs);
+        const millisecondDifference: number = lhsMoment.diff(rhsMoment);
+        return new RealDuration(moment.duration(millisecondDifference));
+    }
 
     /**
-     * Get the current local date and time according to this Clock.
+     * Get the date difference between this DateTime and the provided Date or DateTime.
      */
-    getLocalDateTime(): DateTime;
+    public dateDifference(rhs: Date | DateTime): Duration {
+        const lhsMoment: moment.Moment = moment({
+            year: this.getYear(),
+            month: this.getMonth() - 1,
+            date: this.getDayOfMonth()
+        });
+        const rhsMoment: moment.Moment = moment({
+            year: rhs.getYear(),
+            month: rhs.getMonth() - 1,
+            date: rhs.getDayOfMonth()
+        });
+        const millisecondDifference: number = lhsMoment.diff(rhsMoment);
+        return new RealDuration(moment.duration(millisecondDifference));
+    }
 
     /**
-     * Get the current UTC date according to this Clock.
+     * Get the date and time difference between this DateTime and the provided Time, Date, or
+     * DateTime.
      */
-    getUTCDate(): Date;
-
-    /**
-     * Get the current UTC time according to this Clock.
-     */
-    getUTCTime(): Time;
-
-    /**
-     * Get the current UTC date and time according to this Clock.
-     */
-    getUTCDateTime(): DateTime;
+    public difference(rhs: DateTime): Duration {
+        const subtractor: moment.Moment = moment({
+            year: rhs.getYear(),
+            month: rhs.getMonth() - 1,
+            date: rhs.getDayOfMonth(),
+            hour: rhs.getHour(),
+            minute: rhs.getMinute(),
+            second: rhs.getSecond(),
+            millisecond: rhs.getMillisecond()
+        });
+        const millisecondDifference: number = this._data.diff(subtractor);
+        return new RealDuration(moment.duration(millisecondDifference));
+    }
 }
 
 /**
@@ -417,4 +551,13 @@ export class RealClock implements Clock {
         const data: moment.Moment = moment.utc();
         return new MomentDateTime(data);
     }
+}
+
+function toMomentTime(time: Time): moment.Moment {
+    return moment({
+        hour: time.getHour(),
+        minute: time.getMinute(),
+        second: time.getSecond(),
+        millisecond: time.getMillisecond()
+    });
 }
