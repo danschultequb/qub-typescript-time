@@ -11,6 +11,22 @@ export class Clock implements time.Clock {
     }
 
     /**
+     * Set the current local DateTime value for this mock Clock.
+     * @param now The new DateTime value for now.
+     */
+    public setLocalDateTime(now: time.DateTime): void {
+        this._now = now;
+    }
+
+    /**
+     * Advance the current time of this clock by the provided Duration.
+     * @param duration The duration to advance the current DateTime of this clock.
+     */
+    public advance(duration: time.Duration): void {
+        this._now = this._now.plus(duration);
+    }
+
+    /**
      * Get the current local date according to this Clock.
      */
     public getLocalDate(): time.Date {
