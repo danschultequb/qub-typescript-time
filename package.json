@@ -46,6 +46,7 @@
     "@types/mocha": "2.2.41",
     "@types/node": "8.0.24",
     "coveralls": "2.13.1",
+    "cpy-cli": "1.0.1",
     "mocha": "3.5.0",
     "nyc": "11.1.0",
     "open-cli": "1.0.5",
