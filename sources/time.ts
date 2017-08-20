@@ -63,6 +63,16 @@ export interface Duration {
      * lasted 1 day, 2 hours, 3 minutes, 4 seconds, and 5 milliseconds would return 1250.????.
      */
     asMilliseconds(): number;
+
+    /**
+     * Add the provided Duration to this Duration and return the Duration result.
+     */
+    plus(duration: Duration): Duration;
+
+    /**
+     * Subtract the provided Duration from this Duration and return the Duration result.
+     */
+    minus(duration: Duration): Duration;
 }
 
 export interface DurationDetails {
@@ -154,6 +164,16 @@ export interface Date {
      * Get the difference between this Date and the provided Date or DateTime.
      */
     dateDifference(rhs: Date | DateTime): Duration;
+
+    /**
+     * Add the provided duration to this Date and return the DateTime result.
+     */
+    plus(duration: Duration): DateTime;
+
+    /**
+     * Subtract the provided duration from this Date and return the DateTime result.
+     */
+    minus(duration: Duration): DateTime;
 }
 
 export interface DateDetails {
@@ -212,6 +232,16 @@ export interface Time {
      * Get the difference between this Time and the provided Time or DateTime.
      */
     timeDifference(rhs: Time | DateTime): Duration;
+
+    /**
+     * Add the provided duration to this Time and return the Time result.
+     */
+    plus(duration: Duration): Time;
+
+    /**
+     * Subtract the provided duration from this Time and return the Time result.
+     */
+    minus(duration: Duration): Time;
 }
 
 export interface TimeDetails {
@@ -243,6 +273,16 @@ export interface DateTime extends Date, Time {
      * Get the difference between this DateTime and the provided Time, Date, or DateTime.
      */
     difference(rhs: DateTime): Duration;
+
+    /**
+     * Add the provided duration to this Date and return the DateTime result.
+     */
+    plus(duration: Duration): DateTime;
+
+    /**
+     * Subtract the provided duration from this DateTime and return the DateTime result.
+     */
+    minus(duration: Duration): DateTime;
 }
 
 export interface DateTimeDetails extends DateDetails, TimeDetails {
@@ -383,6 +423,34 @@ class RealDuration implements Duration {
     public asMilliseconds(): number {
         return this._data.asMilliseconds();
     }
+
+    /**
+     * Add the provided Duration to this Duration and return the Duration result.
+     */
+    public plus(duration: Duration): Duration {
+        const resultDuration: moment.Duration = this._data.add(moment.duration({
+            days: duration.getDays(),
+            hours: duration.getHours(),
+            minutes: duration.getMinutes(),
+            seconds: duration.getSeconds(),
+            milliseconds: duration.getMilliseconds()
+        }));
+        return new RealDuration(resultDuration);
+    }
+
+    /**
+     * Subtract the provided Duration from this Duration and return the Duration result.
+     */
+    public minus(duration: Duration): Duration {
+        const resultDuration: moment.Duration = this._data.subtract(moment.duration({
+            days: duration.getDays(),
+            hours: duration.getHours(),
+            minutes: duration.getMinutes(),
+            seconds: duration.getSeconds(),
+            milliseconds: duration.getMilliseconds()
+        }));
+        return new RealDuration(resultDuration);
+    }
 }
 
 /**
@@ -501,6 +569,34 @@ class MomentDateTime {
         });
         const millisecondDifference: number = this._data.diff(subtractor);
         return new RealDuration(moment.duration(millisecondDifference));
+    }
+
+    /**
+     * Add the provided duration to this DateTime and return the DateTime result.
+     */
+    public plus(duration: Duration): DateTime {
+        const resultMoment: moment.Moment = this._data.add(moment.duration({
+            days: duration.getDays(),
+            hours: duration.getHours(),
+            minutes: duration.getMinutes(),
+            seconds: duration.getSeconds(),
+            milliseconds: duration.getMilliseconds()
+        }));
+        return new MomentDateTime(resultMoment);
+    }
+
+    /**
+     * Subtract the provided duration from this DateTime and return the DateTime result.
+     */
+    public minus(duration: Duration): DateTime {
+        const resultMoment: moment.Moment = this._data.subtract(moment.duration({
+            days: duration.getDays(),
+            hours: duration.getHours(),
+            minutes: duration.getMinutes(),
+            seconds: duration.getSeconds(),
+            milliseconds: duration.getMilliseconds()
+        }));
+        return new MomentDateTime(resultMoment);
     }
 }
 
