@@ -3,6 +3,38 @@ import * as assert from "assert";
 import * as time from "../sources/time";
 
 suite("time", () => {
+    suite("Duration", () => {
+        test("plus()", () => {
+            const d1: time.Duration = time.durationFromSeconds(20);
+            const d2: time.Duration = time.durationFrom({
+                minutes: 5,
+                seconds: 3,
+                milliseconds: 329
+            });
+            const d3: time.Duration = d1.plus(d2);
+            assert.deepStrictEqual(d3.getDays(), 0);
+            assert.deepStrictEqual(d3.getHours(), 0);
+            assert.deepStrictEqual(d3.getMinutes(), 5);
+            assert.deepStrictEqual(d3.getSeconds(), 23);
+            assert.deepStrictEqual(d3.getMilliseconds(), 329);
+        });
+
+        test("minus()", () => {
+            const d1: time.Duration = time.durationFromSeconds(20);
+            const d2: time.Duration = time.durationFrom({
+                minutes: 5,
+                seconds: 3,
+                milliseconds: 329
+            });
+            const d3: time.Duration = d1.minus(d2);
+            assert.deepStrictEqual(d3.getDays(), 0);
+            assert.deepStrictEqual(d3.getHours(), 0);
+            assert.deepStrictEqual(d3.getMinutes(), -4);
+            assert.deepStrictEqual(d3.getSeconds(), -43);
+            assert.deepStrictEqual(d3.getMilliseconds(), -329);
+        });
+    });
+
     suite("durationFromDays()", () => {
         function durationFromDaysTest(days: number): void {
             test(`with ${days}`, () => {
@@ -259,6 +291,44 @@ suite("time", () => {
                     assert.deepStrictEqual(difference.getSeconds(), 0);
                     assert.deepStrictEqual(difference.getMilliseconds(), 1);
                 });
+            });
+        });
+
+        suite("plus()", () => {
+            test("with 1 millisecond", () => {
+                const t: time.Time = time.timeFrom({
+                    hour: 5,
+                    minute: 6,
+                    second: 7,
+                    millisecond: 8
+                });
+                const d: time.Duration = time.durationFrom({
+                    milliseconds: 1
+                });
+                const result: time.Time = t.plus(d);
+                assert.deepStrictEqual(t.getHour(), 5);
+                assert.deepStrictEqual(t.getMinute(), 6);
+                assert.deepStrictEqual(t.getSecond(), 7);
+                assert.deepStrictEqual(t.getMillisecond(), 9);
+            });
+        });
+
+        suite("minus()", () => {
+            test("with 1 millisecond", () => {
+                const t: time.Time = time.timeFrom({
+                    hour: 5,
+                    minute: 6,
+                    second: 7,
+                    millisecond: 8
+                });
+                const d: time.Duration = time.durationFrom({
+                    milliseconds: 1
+                });
+                const result: time.Time = t.minus(d);
+                assert.deepStrictEqual(t.getHour(), 5);
+                assert.deepStrictEqual(t.getMinute(), 6);
+                assert.deepStrictEqual(t.getSecond(), 7);
+                assert.deepStrictEqual(t.getMillisecond(), 7);
             });
         });
     });
